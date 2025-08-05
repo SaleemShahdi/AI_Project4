@@ -39,7 +39,9 @@ class PerceptronModel(Module):
         
         "*** YOUR CODE HERE ***"
         #self.w = None #Initialize your weights here
-        self.w = Parameter(ones(1, dimensions))
+        t = ones(1, dimensions)
+        zeroVector = t * 0
+        self.w = Parameter(zeroVector)
         #print(self.w)
 
 
@@ -73,7 +75,9 @@ class PerceptronModel(Module):
         return result"""
         #print(x)
         #print(tensordot(self.w, x))
-        return tensordot(self.w, x)
+        t = tensordot(self.w, x)
+        return t
+        #return tensordot(self.w, x)
 
 
     def get_prediction(self, x):
@@ -84,7 +88,8 @@ class PerceptronModel(Module):
         """
         "*** YOUR CODE HERE ***"
         #print(x)
-        if (self.run(x) >= 0):
+        t = self.run(x)
+        if t >= 0:
             return 1
         return -1
 
@@ -102,7 +107,35 @@ class PerceptronModel(Module):
         with no_grad():
             dataloader = DataLoader(dataset, batch_size=1, shuffle=True)
             "*** YOUR CODE HERE ***"
-            while (True):
+            while True:
+                m = 0
+                for data in dataloader:
+                    featureVector = data['x']
+                    y = data['label']
+                    if ((y * self.get_prediction(featureVector)) <= 0):
+                        newWeights = self.w + (y * featureVector)
+                        self.w = Parameter(newWeights)
+                        m = m + 1
+                if (m == 0):
+                    break
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            """while (True):
                 m = 0
                 for sample in dataloader:
                     prediction = self.get_prediction(sample['x'])
@@ -110,7 +143,7 @@ class PerceptronModel(Module):
                         self.w += sample['x'] * sample['label']
                         m = m + 1
                 if (m == 0):
-                    break
+                    break"""
 
 
 
